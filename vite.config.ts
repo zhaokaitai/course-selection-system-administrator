@@ -12,18 +12,18 @@ export default defineConfig({
     vue(),
     AutoImport({
       resolvers: [
-        ElementPlusResolver(),
         IconsResolver({
           prefix: 'Icon',
         }),
+        ElementPlusResolver(),
       ],
     }),
     Components({
       resolvers: [
-        ElementPlusResolver(),
         IconsResolver({
           enabledCollections: ['ep'],
         }),
+        ElementPlusResolver(),
       ],
     }),
     Icons({
@@ -31,6 +31,7 @@ export default defineConfig({
     }),
   ],
   server: {
+    port: 80,
     proxy: {
       '/api': {
         target: 'http://localhost:8080',
