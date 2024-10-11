@@ -30,6 +30,11 @@ export default defineConfig({
       autoInstall: true,
     }),
   ],
+  resolve: {
+    alias: {
+      '@': '/src',
+    },
+  },
   server: {
     port: 80,
     proxy: {

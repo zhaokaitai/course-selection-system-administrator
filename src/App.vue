@@ -56,7 +56,7 @@
       <div>学生选课系统管理端</div>
     </div>
     <div class="login-form">
-      <el-tabs v-model="activeName" @tab-click="handleClick">
+      <el-tabs v-model="activeName">
         <el-tab-pane label="账号密码登录" name="account">
           <el-input v-model="account" placeholder="Please input account" clearable>
             <template #prepend>
@@ -93,7 +93,7 @@
           </div>
         </el-tab-pane>
       </el-tabs>
-      <el-button color="orange">立即登录</el-button>
+      <el-button color="orange" @click="login">立即登录</el-button>
       <div class="forgot-password">忘记密码?</div>
     </div>
   </div>
@@ -102,13 +102,13 @@
 <script setup lang="ts">
 import { House, Search, Money, AlarmClock, Setting, User, Lock, Phone, Key } from '@element-plus/icons-vue';
 import { ref } from 'vue';
-import type { TabsPaneContext } from 'element-plus'
+import { authLogin } from './api/login';
 
 const account = ref('');
 const password = ref('');
 const phone = ref('');
 const smsCode = ref('');
-const activeName = ref('account')
+const activeName = ref('account');
 
 const handleOpen = (key: string, keyPath: string[]) => {
   console.log(key, keyPath)
@@ -116,14 +116,27 @@ const handleOpen = (key: string, keyPath: string[]) => {
 const handleClose = (key: string, keyPath: string[]) => {
   console.log(key, keyPath)
 }
-const handleClick = (tab: TabsPaneContext, event: Event) => {
-  console.log(tab, event)
+const login = () => {
+  console.log(activeName.value);
+
+  if (activeName.value === 'account') {
+    console.log(account.value, password.value)
+    authLogin({
+      account: account.value,
+      password: password.value
+    })
+  }
+
+  if (activeName.value === 'phone') {
+    console.log(phone.value, smsCode.value)
+  }
 }
 </script>
 
 <style lang="scss" scoped>
 .common-layout {
   width: 100%;
+
   height: 100%;
   text-align: center;
 
@@ -246,6 +259,12 @@ const handleClick = (tab: TabsPaneContext, event: Event) => {
             }
           }
         }
+      }
+    }
+
+    :deep(.el-button) {
+      &:focus {
+        outline:unset;
       }
     }
 
