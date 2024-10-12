@@ -20,6 +20,8 @@
     "vuex": "^4.1.0"
   },
   "devDependencies": {
+    "@iconify-json/ep": "^1.2.1",
+    "@types/node": "^22.7.5",
     "@vitejs/plugin-vue": "^5.1.2",
     "sass-embedded": "^1.79.1",
     "typescript": "^5.5.3",

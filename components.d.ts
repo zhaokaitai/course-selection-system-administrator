@@ -24,6 +24,13 @@ declare module 'vue' {
     ElTabPane: typeof import('element-plus/es')['ElTabPane']
     ElTabs: typeof import('element-plus/es')['ElTabs']
     HelloWorld: typeof import('./src/components/HelloWorld.vue')['default']
+    HomeView: typeof import('./src/components/HomeView.vue')['default']
+    IEpAlarmClock: typeof import('~icons/ep/alarm-clock')['default']
+    IEpHouse: typeof import('~icons/ep/house')['default']
+    IEpMoney: typeof import('~icons/ep/money')['default']
+    IEpSearch: typeof import('~icons/ep/search')['default']
+    IEpSetting: typeof import('~icons/ep/setting')['default']
+    LoginView: typeof import('./src/components/LoginView.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
   }
