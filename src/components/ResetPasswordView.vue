@@ -20,6 +20,7 @@
 import { ref } from 'vue';
 import { authResetPassword } from '../api/login';
 import { useRouter } from 'vue-router';
+import store from '../store';
 
 const router = useRouter();
 const phone = ref('');
@@ -54,10 +55,12 @@ const getSmsCode = () => {
 }
 const resetPassword = () => {
     authResetPassword({ phone: phone.value, smsCode: smsCode.value, password: password.value, passwordTwo: passwordTwo.value })
-    .then(() => {
-        ElMessage.success('重置密码成功!');
-        router.push('/');
-    })
+        .then(() => {
+            store.commit('setIsLogin', false);
+            store.commit('setUserInfo', {});
+            ElMessage.success('重置密码成功!');
+            router.push('/');
+        })
 }
 </script>
 
@@ -95,7 +98,8 @@ const resetPassword = () => {
             }
         }
 
-        .el-input,.el-button {
+        .el-input,
+        .el-button {
             height: 3vw;
             font-size: 16px;
             margin-bottom: 1vw;

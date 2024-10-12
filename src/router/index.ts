@@ -11,7 +11,14 @@ const routes: Array<RouteRecordRaw> = [
     }, {
         path: '/home',
         name: 'home',
-        component: HomeView
+        component: HomeView,
+        children: [
+            {
+                path: '/userinfo',
+                name: 'userinfo',
+                component: () => import('../components/UserInfoView.vue')
+            }
+        ]
     }, {
         path: '/resetPassword',
         name: 'resetPassword',

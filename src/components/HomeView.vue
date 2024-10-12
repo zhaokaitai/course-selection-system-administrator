@@ -3,32 +3,32 @@
         <el-container>
             <el-aside>
                 <h3>选课系统</h3>
-                <el-menu default-active="1" class="el-menu-vertical-demo" @open="handleOpen">
-                    <el-menu-item index="1">
+                <el-menu default-active="house" class="el-menu-vertical-demo" @open="handleOpen">
+                    <el-menu-item index="house">
                         <el-icon>
                             <House />
                         </el-icon>
                         <span>总览</span>
                     </el-menu-item>
-                    <el-menu-item index="2">
+                    <el-menu-item index="course">
                         <el-icon>
                             <Search />
                         </el-icon>
                         <span>查看选课信息</span>
                     </el-menu-item>
-                    <el-menu-item index="3">
+                    <el-menu-item index="data">
                         <el-icon>
                             <Money />
                         </el-icon>
                         <span>查看数据信息</span>
                     </el-menu-item>
-                    <el-menu-item index="4">
+                    <el-menu-item index="timeset">
                         <el-icon>
                             <AlarmClock />
                         </el-icon>
                         <span>选课时间设置</span>
                     </el-menu-item>
-                    <el-menu-item index="5">
+                    <el-menu-item index="userinfo">
                         <el-icon>
                             <Setting />
                         </el-icon>
@@ -61,8 +61,8 @@ import { useRouter } from 'vue-router';
 const userInfo = store.getters.userInfo;
 const router = useRouter();
 
-const handleOpen = (key: string, keyPath: string[]) => {
-    console.log(key, keyPath)
+const handleOpen = (key: string) => {
+    router.push({ name: key });
 }
 const logout = () => {
     authLogout().then(() => {
