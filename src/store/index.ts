@@ -2,19 +2,27 @@ import { createStore } from 'vuex';
 
 export default createStore({
     state: {
-        token: '',
+        userInfo: {},
         isLogin: false
     },
     getters: {
-        token: state => state.token,
-        isLogin: state => state.isLogin
+        userInfo: state => {
+            state.userInfo = JSON.parse(localStorage.getItem('userInfo') ?? '{}');
+            return state.userInfo
+        },
+        isLogin: state => {
+            state.isLogin = Boolean(JSON.parse(localStorage.getItem('isLogin') ?? 'false'));
+            return state.isLogin
+        }
     },
     mutations: {
-        setToken(state, token) {
-            state.token = token
+        setUserInfo(state, userInfo) {
+            state.userInfo = userInfo
+            localStorage.setItem('userInfo', JSON.stringify(userInfo))
         },
         setIsLogin(state, isLogin) {
             state.isLogin = isLogin
+            localStorage.setItem('isLogin', JSON.stringify(isLogin))
         }
     },
     actions: {

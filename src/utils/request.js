@@ -38,6 +38,8 @@ service.interceptors.response.use(response => {
     throw new Error("禁止操作");
   } else if (response.data.code === 50000) {
     throw new Error("系统内部异常");
+  } else if (response.data.data == null || undefined) {
+    throw new Error("请求到的数据为空");
   }
 
   return response;

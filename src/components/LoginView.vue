@@ -7,14 +7,14 @@
     <div class="login-form">
       <el-tabs v-model="activeName">
         <el-tab-pane label="账号密码登录" name="account">
-          <el-input v-model="account" placeholder="Please input account" clearable>
+          <el-input v-model="account" placeholder="请输入账号" clearable>
             <template #prepend>
               <el-icon :size="25" color="orange">
                 <User />
               </el-icon>
             </template>
           </el-input>
-          <el-input v-model="password" type="password" placeholder="Please input password" show-password>
+          <el-input v-model="password" type="password" placeholder="请输入密码" show-password>
             <template #prepend>
               <el-icon :size="25" color="orange">
                 <Lock />
@@ -23,7 +23,7 @@
           </el-input>
         </el-tab-pane>
         <el-tab-pane label="手机号验证码登录" name="phone">
-          <el-input v-model="phone" placeholder="Please input phone" clearable>
+          <el-input v-model="phone" placeholder="请输入手机号" clearable>
             <template #prepend>
               <el-icon :size="25" color="orange">
                 <Phone />
@@ -31,14 +31,14 @@
             </template>
           </el-input>
           <div class="sms-code">
-            <el-input v-model="smsCode" placeholder="Please input smsCode">
+            <el-input v-model="smsCode" placeholder="请输入短信验证码">
               <template #prepend>
                 <el-icon :size="25" color="orange">
                   <Key />
                 </el-icon>
               </template>
             </el-input>
-            <el-button color="orange">获取验证码</el-button>
+            <el-button color="orange" :disabled="smsDisabled" @click="getSmsCode">{{ countdown }}</el-button>
           </div>
         </el-tab-pane>
       </el-tabs>
@@ -51,8 +51,9 @@
 <script setup lang="ts">
 import { User, Lock, Phone, Key } from '@element-plus/icons-vue';
 import { ref } from 'vue';
-import { authLogin } from '../api/login';
+import { authLogin, authSmsLogin } from '../api/login';
 import { useRouter } from 'vue-router';
+import store from '../store';
 
 const router = useRouter();
 const account = ref('');
@@ -61,25 +62,59 @@ const phone = ref('');
 const smsCode = ref('');
 const activeName = ref('account');
 
-const login = () => {
-  console.log(activeName.value);
+const smsDisabled = ref(false);
+const initialTime = ref(60);
+const countdown = ref("获取验证码");
+let timer: number | NodeJS.Timeout | undefined = undefined;
 
+const getSmsCode = () => {
+  if (phone.value === '') {
+    throw new Error('请输入手机号');
+  }
+
+  smsDisabled.value = true;
+
+  timer = setInterval(() => {
+    if (initialTime.value > 0) {
+      initialTime.value--;
+      countdown.value = String(initialTime.value) + "s";
+    } else {
+      clearInterval(timer);
+      timer = undefined;
+      initialTime.value = 60;
+      countdown.value = "获取验证码";
+      smsDisabled.value = false;
+    }
+  }, 1000);
+}
+const login = () => {
   if (activeName.value === 'account') {
-    console.log(account.value, password.value)
     authLogin({
       account: account.value,
       password: password.value
-    }).then(() => {
+    }).then((res: any) => {
+      const userInfo = res.data.data;
+      store.commit('setIsLogin', true);
+      store.commit('setUserInfo', userInfo);
       router.push('/home');
     })
   }
 
   if (activeName.value === 'phone') {
-    console.log(phone.value, smsCode.value)
+    authSmsLogin({
+      phone: phone.value,
+      smsCode: smsCode.value
+    }).then((res: any) => {
+      const userInfo = res.data.data;
+      console.log(userInfo)
+      store.commit('setIsLogin', true);
+      store.commit('setUserInfo', userInfo);
+      router.push('/home');
+    })
   }
 }
 const forgetPassword = () => {
-
+  router.push('/resetPassword');
 }
 </script>
 

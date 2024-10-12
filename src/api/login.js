@@ -14,10 +14,33 @@ export function authLogin(params) {
         },
     });
 }
+export function authSmsLogin(params) {
+    return request({
+        url: baseUrl + "/loginByPhone",
+        method: "post",
+        data: {
+            phone: params.phone,
+            smsCode: params.smsCode
+        },
+    });
+}
 //退出
 export function authLogout(params) {
     return request({
         url: baseUrl + "/logout",
-        method: "get",
+        method: "post",
+    });
+}
+//重置密码
+export function authResetPassword(params) {
+    return request({
+        url: baseUrl + "/resetPassword",
+        method: "post",
+        data: {
+            phone: params.phone,
+            smsCode: params.smsCode,
+            password: params.password,
+            passwordTwo: params.passwordTwo
+        },
     });
 }

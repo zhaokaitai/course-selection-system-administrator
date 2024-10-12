@@ -3,7 +3,7 @@
         <el-container>
             <el-aside>
                 <h3>选课系统</h3>
-                <el-menu default-active="1" class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose">
+                <el-menu default-active="1" class="el-menu-vertical-demo" @open="handleOpen">
                     <el-menu-item index="1">
                         <el-icon>
                             <House />
@@ -38,10 +38,10 @@
             </el-aside>
             <el-container>
                 <el-header>
-                    <div class="left">昵称</div>
+                    <div class="left">{{ userInfo.managerName }}</div>
                     <div class="right">
-                        <el-avatar>管理</el-avatar>
-                        <div class="logout">退出登录</div>
+                        <el-avatar :src="userInfo.avatarUrl" />
+                        <div class="logout" @click="logout">退出登录</div>
                     </div>
                 </el-header>
                 <el-main>
@@ -54,12 +54,23 @@
 
 <script lang="ts" setup>
 import { House, Search, Money, AlarmClock, Setting } from '@element-plus/icons-vue';
+import store from '../store';
+import { authLogout } from '../api/login';
+import { useRouter } from 'vue-router';
+
+const userInfo = store.getters.userInfo;
+const router = useRouter();
 
 const handleOpen = (key: string, keyPath: string[]) => {
     console.log(key, keyPath)
 }
-const handleClose = (key: string, keyPath: string[]) => {
-    console.log(key, keyPath)
+const logout = () => {
+    authLogout().then(() => {
+        store.commit('setIsLogin', false);
+        store.commit('setUserInfo', {});
+        ElMessage.success('退出登录成功');
+        router.push('/');
+    })
 }
 </script>
 
