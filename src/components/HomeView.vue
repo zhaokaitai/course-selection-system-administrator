@@ -3,24 +3,18 @@
         <el-container>
             <el-aside>
                 <h3>选课系统</h3>
-                <el-menu default-active="house" class="el-menu-vertical-demo" @open="handleOpen">
+                <el-menu default-active="house" class="el-menu-vertical-demo" @open="handleOpen" @select="handleOpen">
                     <el-menu-item index="house">
                         <el-icon>
                             <House />
                         </el-icon>
                         <span>总览</span>
                     </el-menu-item>
-                    <el-menu-item index="course">
-                        <el-icon>
-                            <Search />
-                        </el-icon>
-                        <span>查看选课信息</span>
-                    </el-menu-item>
                     <el-menu-item index="data">
                         <el-icon>
                             <Money />
                         </el-icon>
-                        <span>查看数据信息</span>
+                        <span>导入和导出</span>
                     </el-menu-item>
                     <el-menu-item index="timeset">
                         <el-icon>
@@ -53,15 +47,16 @@
 </template>
 
 <script lang="ts" setup>
-import { House, Search, Money, AlarmClock, Setting } from '@element-plus/icons-vue';
+import { House, Money, AlarmClock, Setting } from '@element-plus/icons-vue';
 import store from '../store';
-import { authLogout } from '../api/login';
+import { authLogout } from '../api/user';
 import { useRouter } from 'vue-router';
 
 const userInfo = store.getters.userInfo;
 const router = useRouter();
 
 const handleOpen = (key: string) => {
+    console.log(key);
     router.push({ name: key });
 }
 const logout = () => {

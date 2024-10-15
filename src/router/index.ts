@@ -17,6 +17,18 @@ const routes: Array<RouteRecordRaw> = [
                 path: '/userinfo',
                 name: 'userinfo',
                 component: () => import('../components/UserInfoView.vue')
+            },{
+                path: '/timeset',
+                name: 'timeset',
+                component: () => import('../components/SetTimeView.vue')
+            },{
+                path: '/house',
+                name: 'house',
+                component: () => import('../components/HouseView.vue')
+            },{
+                path: '/data',
+                name: 'data',
+                component: () => import('../components/DataView.vue')
             }
         ]
     }, {

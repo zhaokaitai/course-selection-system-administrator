@@ -14,6 +14,7 @@ export function authLogin(params) {
         },
     });
 }
+// 验证码登录
 export function authSmsLogin(params) {
     return request({
         url: baseUrl + "/loginByPhone",
@@ -41,6 +42,37 @@ export function authResetPassword(params) {
             smsCode: params.smsCode,
             password: params.password,
             passwordTwo: params.passwordTwo
+        },
+    });
+}
+//修改头像
+export function authChangeAvatarUrl(params) {
+    return request({
+        url: baseUrl + "/changeAvatarUrl",
+        method: "get",
+        params: {
+            avatarUrl: params
+        },
+    });
+}
+//修改昵称
+export function authChangeManagerName(params) {
+    return request({
+        url: baseUrl + "/changeManagerName",
+        method: "get",
+        params: {
+            managerName: params
+        },
+    });
+}
+//修改手机号码
+export function authChangePhone(params) {
+    return request({
+        url: baseUrl + "/changePhone",
+        method: "post",
+        data: {
+            phone: params.phone,
+            smsCode: params.smsCode
         },
     });
 }

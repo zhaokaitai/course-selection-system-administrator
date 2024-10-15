@@ -51,7 +51,7 @@
 <script setup lang="ts">
 import { User, Lock, Phone, Key } from '@element-plus/icons-vue';
 import { ref } from 'vue';
-import { authLogin, authSmsLogin } from '../api/login';
+import { authLogin, authSmsLogin } from '../api/user';
 import { useRouter } from 'vue-router';
 import store from '../store';
 

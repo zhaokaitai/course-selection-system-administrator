@@ -58,7 +58,7 @@
             <template #footer>
                 <div class="dialog-footer">
                     <el-button @click="centerDialogVisible = false">取消</el-button>
-                    <el-button color="orange" style="color: #fff;" @click="centerDialogVisible = false">提交</el-button>
+                    <el-button color="orange" style="color: #fff;" @click="submitPhone">提交</el-button>
                 </div>
             </template>
         </el-dialog>
@@ -70,6 +70,7 @@ import { nextTick, ref } from 'vue';
 import store from '../store';
 import router from '../router';
 import { Edit } from '@element-plus/icons-vue';
+import { authChangeAvatarUrl, authChangeManagerName, authChangePhone } from '../api/user';
 
 const userInfo = store.getters.userInfo;
 const managerName = ref(userInfo.managerName);
@@ -95,14 +96,15 @@ const setAvatar = () => {
         center: true,
     }).then(({ value }) => {
         // 设置头像
-        // TODO 发送请求
-
-        userInfo.avatarUrl = value;
-        store.commit('setUserInfo', userInfo);
-        ElMessage({
-            type: 'success',
-            message: '设置头像成功',
-        })
+        authChangeAvatarUrl(value)
+            .then(() => {
+                userInfo.avatarUrl = value;
+                store.commit('setUserInfo', userInfo);
+                ElMessage({
+                    type: 'success',
+                    message: '设置头像成功',
+                })
+            })
     }).catch(() => {
         ElMessage({
             type: 'info',
@@ -126,7 +128,17 @@ const startEditing = () => {
 
 // 保存编辑
 const saveEdit = () => {
-    managerName.value = editText.value;
+    // 设置昵称
+    authChangeManagerName(editText.value)
+        .then(() => {
+            managerName.value = editText.value;
+            userInfo.managerName = editText.value;
+            store.commit('setUserInfo', userInfo);
+            ElMessage({
+                type: 'success',
+                message: '设置昵称成功',
+            })
+        })
     isEditing.value = false;
     showIcon.value = false;
 };
@@ -159,6 +171,20 @@ const getSmsCode = () => {
     }, 1000);
 }
 
+// 提交手机号码
+const submitPhone = () => {
+    centerDialogVisible.value = false;
+    // 修改手机号码
+    authChangePhone({ phone: phone.value, smsCode: smsCode.value })
+        .then(() => {
+            userInfo.phone = phone.value;
+            store.commit('setUserInfo', userInfo);
+            ElMessage({
+                type: 'success',
+                message: '修改手机号成功',
+            })
+        })
+}
 </script>
 
 <style lang="scss" scoped>

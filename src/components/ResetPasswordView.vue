@@ -18,7 +18,7 @@
 
 <script lang="ts" setup>
 import { ref } from 'vue';
-import { authResetPassword } from '../api/login';
+import { authResetPassword } from '../api/user';
 import { useRouter } from 'vue-router';
 import store from '../store';
 

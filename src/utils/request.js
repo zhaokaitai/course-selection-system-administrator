@@ -26,6 +26,35 @@ service.interceptors.request.use(config => {
 service.interceptors.response.use(response => {
   //接收到响应数据并成功后的一些共有的处理，关闭loading等
   ElLoading.service().close();
+
+  const contentType = response.headers['content-type'];
+  if (contentType === "application/octet-stream;charset=UTF-8") {
+    // 返回的是文件流
+    const blob = new Blob([response.data], { type: contentType })
+    const url = window.URL.createObjectURL(blob)
+    // 创建一个 <a> 标签，模拟点击下载
+    const link = document.createElement('a')
+    link.href = url
+    const contentDisposition = response.headers['content-disposition'];
+    let fileName = 'default.txt';
+    if (contentDisposition) {
+      const matches = contentDisposition.match(/filename\*?=(UTF-8'')?(.+?)(;|$)/);
+      if (matches && matches[2]) {
+        fileName = decodeURIComponent(matches[2].replace(/'/g, ''));
+      }
+    }
+    link.download = fileName;
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+    window.URL.revokeObjectURL(url)
+    return Promise.resolve();
+  }
+
+  if (!response.data) {
+    throw new Error("响应数据为空");
+  }
+
   if (response.data.code === 40000) {
     throw new Error("请求参数错误");
   } else if (response.data.code === 40001) {
@@ -45,6 +74,7 @@ service.interceptors.response.use(response => {
   return response;
 }, error => {
   // 超时处理
+  ElLoading.service().close();
   if (JSON.stringify(error).includes('timeout')) {
     throw new Error("服务器响应超时");
   } else {
