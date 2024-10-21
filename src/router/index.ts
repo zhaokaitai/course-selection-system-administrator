@@ -26,9 +26,13 @@ const routes: Array<RouteRecordRaw> = [
                 name: 'house',
                 component: () => import('../components/HouseView.vue')
             },{
-                path: '/data',
-                name: 'data',
-                component: () => import('../components/DataView.vue')
+                path: '/importData',
+                name: 'importData',
+                component: () => import('../components/ImportDataView.vue')
+            },{
+                path: '/assessSituation',
+                name: 'assessSituation',
+                component: () => import('../components/AssessSituationView.vue')
             }
         ]
     }, {

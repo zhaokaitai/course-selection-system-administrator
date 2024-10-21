@@ -25,9 +25,9 @@ import { ref } from 'vue';
 import { formatDatetiem, formatDatetimeToDate } from '../utils/formatDatetiem';
 import { getTime, setTime } from '../api/setTime';
 
-const time1 = ref<Date[]>([]);
-const time2 = ref<Date[]>([]);
-const time3 = ref<Date[]>([]);
+const time1 = ref<any[]>([]);
+const time2 = ref<any[]>([]);
+const time3 = ref<any[]>([]);
 
 const submit = () => {
     // 提交
@@ -49,7 +49,6 @@ const init = async () => {
         time1.value = [formatDatetimeToDate(data.firstDateTime1), formatDatetimeToDate(data.firstDateTime2)];
         time2.value = [formatDatetimeToDate(data.secondDateTime1), formatDatetimeToDate(data.secondDateTime2)];
         time3.value = [formatDatetimeToDate(data.thirdDateTime1), formatDatetimeToDate(data.thirdDateTime2)];
-        
     })
 }
 

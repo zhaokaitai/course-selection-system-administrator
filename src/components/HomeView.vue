@@ -10,11 +10,17 @@
                         </el-icon>
                         <span>总览</span>
                     </el-menu-item>
-                    <el-menu-item index="data">
+                    <el-menu-item index="assessSituation">
+                        <el-icon>
+                            <DataAnalysis />
+                        </el-icon>
+                        <span>查看选课情况</span>
+                    </el-menu-item>
+                    <el-menu-item index="importData">
                         <el-icon>
                             <Money />
                         </el-icon>
-                        <span>导入和导出</span>
+                        <span>导入数据</span>
                     </el-menu-item>
                     <el-menu-item index="timeset">
                         <el-icon>
@@ -47,7 +53,7 @@
 </template>
 
 <script lang="ts" setup>
-import { House, Money, AlarmClock, Setting } from '@element-plus/icons-vue';
+import { House, DataAnalysis, Money, AlarmClock, Setting } from '@element-plus/icons-vue';
 import store from '../store';
 import { authLogout } from '../api/user';
 import { useRouter } from 'vue-router';

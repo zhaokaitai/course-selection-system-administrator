@@ -9,10 +9,14 @@ export function formatDatetiem(date) {
 }
 
 export function formatDatetimeToDate(dateString) {
+    if (!dateString) {
+        return null;
+    }
+    
     // 尝试将日期字符串直接解析为日期对象
     const date = new Date(dateString.replace(" ", "T"));
     if (isNaN(date)) {
-        throw new Error("Invalid date format");
+        return null;
     }
     return date;
 }
