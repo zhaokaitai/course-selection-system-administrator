@@ -11,17 +11,24 @@ export function getCurriculaVariable() {
     });
 }
 
-//上传文件
-    export function uploadFile(file, type) {
-        const formData = new FormData();
-        formData.append('file', file); // 将文件添加到 FormData
+//获取未能开课的教学班信息文件
+export function getUnCurriculaVariable() {
+    return request({
+        url: baseUrl,
+        method: "post",
+        responseType: 'blob'
+    });
+}
 
-        return request({
-            url: baseUrl + '/upload?type=' + type,
-            method: "post",
-            data: formData,
-            headers: {
-                'Content-Type': 'multipart/form-data'
-            }
-        })
-    }
+//上传文件
+export function uploadDataFile(file, type) {
+    const formData = new FormData();
+    formData.append('file', file); // 将文件添加到 FormData
+    formData.append('type', type);
+
+    return request({
+        url: baseUrl + '/upload',
+        method: "post",
+        data: formData
+    })
+}

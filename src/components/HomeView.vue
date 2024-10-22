@@ -62,7 +62,6 @@ const userInfo = store.getters.userInfo;
 const router = useRouter();
 
 const handleOpen = (key: string) => {
-    console.log(key);
     router.push({ name: key });
 }
 const logout = () => {

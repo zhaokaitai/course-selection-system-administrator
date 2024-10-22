@@ -13,9 +13,17 @@ service.interceptors.request.use(config => {
     text: '拼命加载中...',
     background: 'rgba(0, 0, 0, 0.7)',
   });
-  config.data = JSON.stringify(config.data);
-  config.headers = {
-    'Content-Type': 'application/json'
+  if (config.url.includes('/upload')) {
+    // 如果是文件上传，不要序列化数据
+    config.headers = {
+      'Content-Type': 'multipart/form-data'
+    };
+  } else {
+    // 其他请求，序列化数据为 JSON
+    config.data = JSON.stringify(config.data);
+    config.headers = {
+      'Content-Type': 'application/json'
+    };
   }
   return config;
 }, error => {

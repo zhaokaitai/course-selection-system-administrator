@@ -1,13 +1,13 @@
 <template>
     <div class="layout">
         <div class="search">
-            <el-input v-model="input" placeholder="请输入需要查询的课程" clearable />
+            <el-input v-model="input" placeholder="请输入需要查询的教学班名称" clearable />
             <el-button color="orange" @click="search" plain>搜索</el-button>
             <el-button color="orange" @click="exportCurriculaVariable" plain>导出选课信息</el-button>
         </div>
         <div class="content">
             <div class="classList">
-                <div class="classListItem" v-for="item in classList" :key="item.id">
+                <div class="classListItem" v-for="item in classList" :key="item.id" @click="classClick(item.id)">
                     <div>{{ item.name }}</div>
                     <div>{{ item.teacher }}</div>
                     <div>已选{{ item.selectNum }}人</div>
@@ -15,8 +15,8 @@
                 </div>
             </div>
             <el-table :data="tableData">
-                <el-table-column label="学号" prop="date" />
-                <el-table-column label="姓名" prop="name" />
+                <el-table-column label="学号" prop="studentNumber" />
+                <el-table-column label="姓名" prop="userName" />
                 <el-table-column align="right">
                     <template #header>
                         <div>课程名</div>
@@ -24,7 +24,7 @@
                     </template>
                     <template #default="scope">
                         <el-button size="small" type="danger" @click="handleDelete(scope.row)">
-                            Delete
+                            删除
                         </el-button>
                     </template>
                 </el-table-column>
@@ -47,44 +47,40 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
 import { getCurriculaVariable } from '../api/data';
-const tableData = [
-    {
-        date: '2016-05-03',
-        name: 'Tom',
-        address: 'No. 189, Grove St, Los Angeles',
-    },{
-        date: '2016-05-02',
-        name: 'John',
-        address: 'No. 189, Grove St, Los Angeles',
-    },{
-        date: '2016-05-04',
-        name: 'Morgan',
-        address: 'No. 189, Grove St, Los Angeles',
-    },{
-        date: '2016-05-01',
-        name: 'Jessy',
-        address: 'No. 189, Grove St, Los Angeles',
-    }
-]
-const classList = ref<User[]>([
-    {
-        id: 1,
-        name: '软件工程1班',
-        teacher: '张三',
-        selectNum: 5,
-        capacity: 50
-    }
-])
+import { addOneStudent, deleteOneStudent, getAll, getStudentList, searchClass } from '../api/assessSituation';
+
+const tableData = ref([]);
+const classList = ref<User[]>([])
 const input = ref('')
 const centerDialogVisible = ref(false)
 const student = ref('');
+const selectId = ref(0);
 
 const search = () => {
-    console.log(input.value)
+    searchClass(input.value).then((res: any) => {
+        tableData.value = [];
+        classList.value = res.data.data.map((item: any) => ({
+            id: item.id,
+            name: item.className,
+            teacher: item.teacherName,
+            selectNum: item.selectedNum,
+            capacity: item.capacity
+        }));
+    })
 }
 
 const exportCurriculaVariable = () => {
     getCurriculaVariable()
+}
+
+const classClick = (id: number) => {
+    selectId.value = id;
+    getStudentList(id).then((res: any) => {
+        tableData.value = res.data.data.map((item: any) => ({
+            studentNumber: item.studentNumber,
+            userName: item.userName
+        }))
+    })
 }
 
 interface User {
@@ -94,17 +90,46 @@ interface User {
     selectNum: number
     capacity: number
 }
-
 const addStudent = () => {
-    console.log(student.value);
-
+    addOneStudent({
+        classId: selectId.value,
+        studentNumber: student.value
+    }).then((res: any) => {
+        if (res.data.data === 0) {
+            ElMessage.error('添加失败');
+            centerDialogVisible.value = false;
+            return;
+        }
+    })
     centerDialogVisible.value = false;
     ElMessage.success('添加成功');
 }
+const handleDelete = (row: any) => {
+    deleteOneStudent({
+        classId: selectId.value,
+        studentNumber: row.studentNumber
+    }).then((res: any) => {
+        if (res.data.data === 0) {
+            ElMessage.error('删除失败');
+            return;
+        }
 
-const handleDelete = (row: User) => {
-    console.log(row)
+        ElMessage.success('删除成功');
+        classClick(selectId.value);
+    })
 }
+const init = () => {
+    getAll().then((res: any) => {
+        classList.value = res.data.data.map((item: any) => ({
+            id: item.id,
+            name: item.className,
+            teacher: item.teacherName,
+            selectNum: item.selectedNum,
+            capacity: item.capacity
+        }));
+    })
+}
+init();
 </script>
 
 <style lang="scss" scoped>

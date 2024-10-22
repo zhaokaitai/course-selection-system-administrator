@@ -22,7 +22,8 @@
             </div>
         </div>
         <el-table :data="fileContent" v-if="fileContent.length > 0">
-            <el-table-column v-for="item in Object.keys(fileContent[0])" :key="item" :prop=item :label=item min-width="120"/>
+            <el-table-column v-for="item in Object.keys(fileContent[0])" :key="item" :prop=item :label=item
+                min-width="160" />
         </el-table>
     </div>
 </template>
@@ -31,6 +32,7 @@
 import { ref } from 'vue';
 import * as XLSX from 'xlsx';
 import type { UploadFile } from 'element-plus';
+import { uploadDataFile } from '../api/data';
 
 interface ExcelRow {
     [key: string]: any; // 定义每行数据为键值对对象
@@ -66,6 +68,8 @@ const beforeUpload = (file: File) => {
     if (!isExcel) {
         ElMessage.error('请上传 Excel 文件');
     }
+    console.log("aaaaaaa" + isExcel);
+
     return isExcel;
 };
 
@@ -82,27 +86,29 @@ const handleChange = (file: UploadFile) => {
         }
     };
     reader.readAsArrayBuffer(file.raw as Blob);
+    fileList.value = [file];
 };
 
 // 清空内容的逻辑
 const handleRemove = () => {
     // 清空文件内容
     fileContent.value = []; // 清空已读取的内容
+    fileList.value = [];
 };
 
 // 自定义上传方法
 const uploadFile = async (options: { file: File; onSuccess: () => void; onError: (error: Error) => void }) => {
-    const formData = new FormData();
-    formData.append('file', options.file);
-
-    const response = await fetch('YOUR_UPLOAD_URL', {
-        method: 'POST',
-        body: formData,
-    });
-
-    if (!response.ok) {
-        throw new Error('上传失败');
+    if (!options.file) {
+        ElMessage.warning('请选择文件');
+        return;
     }
+
+    if (!value.value) {
+        ElMessage.warning('请选择您要导入的数据');
+        return;
+    }
+
+    await uploadDataFile(options.file, value.value);
 
     options.onSuccess(); // 成功后调用
 };
@@ -114,7 +120,9 @@ const handleUpload = () => {
         uploadFile({
             file, onSuccess: () => {
                 ElMessage.success('导入成功');
-                fileList.value = []; // 清空文件列表
+                // 清空文件内容
+                fileContent.value = []; // 清空已读取的内容
+                fileList.value = [];
             }, onError: (error) => {
                 ElMessage?.error(error.message);
             }
