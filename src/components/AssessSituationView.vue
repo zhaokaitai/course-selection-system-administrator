@@ -7,7 +7,7 @@
         </div>
         <div class="content">
             <div class="classList">
-                <div class="classListItem" v-for="item in classList" :key="item.id" @click="classClick(item.id)">
+                <div class="classListItem" v-for="item in classList" :key="item.id" @click="classClick(item.id, item.name)">
                     <div>{{ item.name }}</div>
                     <div>{{ item.teacher }}</div>
                     <div>已选{{ item.selectNum }}人</div>
@@ -19,8 +19,8 @@
                 <el-table-column label="姓名" prop="userName" />
                 <el-table-column align="right">
                     <template #header>
-                        <div>课程名</div>
-                        <el-button size="small" type="success" @click="centerDialogVisible = true">添加学生</el-button>
+                        <div>{{ selectClassName }}</div>
+                        <el-button v-show="selectId" size="small" type="success" @click="centerDialogVisible = true">添加学生</el-button>
                     </template>
                     <template #default="scope">
                         <el-button size="small" type="danger" @click="handleDelete(scope.row)">
@@ -55,6 +55,7 @@ const input = ref('')
 const centerDialogVisible = ref(false)
 const student = ref('');
 const selectId = ref(0);
+const selectClassName = ref('');
 
 const search = () => {
     searchClass(input.value).then((res: any) => {
@@ -73,8 +74,9 @@ const exportCurriculaVariable = () => {
     getCurriculaVariable()
 }
 
-const classClick = (id: number) => {
+const classClick = (id: number, className: string) => {
     selectId.value = id;
+    selectClassName.value = className;
     getStudentList(id).then((res: any) => {
         tableData.value = res.data.data.map((item: any) => ({
             studentNumber: item.studentNumber,
@@ -115,7 +117,7 @@ const handleDelete = (row: any) => {
         }
 
         ElMessage.success('删除成功');
-        classClick(selectId.value);
+        classClick(selectId.value, selectClassName.value);
     })
 }
 const init = () => {
